@@ -26,3 +26,9 @@ button {
 textarea {
 	display: block;
 }
+
+#status {
+	width: 1%;
+	margin-bottom: 10px;
+	background-color: lemonchiffon;
+}
