@@ -1,126 +1,145 @@
-const arcadeColors = [
-	"#000000",
-	"#ffffff",
-	"#ff2121",
-	"#ff93c4",
-	"#ff8135",
-	"#fff609",
-	"#249ca3",
-	"#78dc52",
-	"#003fad",
-	"#87f2ff",
-	"#8e2ec4",
-	"#a4839f",
-	"#5c406c",
-	"#e5cdc4",
-	"#91463d",
-	"#000000",
-].map((c, index) => {
-	return { color: hexToHSL(c), index }
-})
+// https://makecode.com/_Cm17aw5xbKpU
 
-const size = 120
-const img = document.querySelector("img")
-img.width = size
+setTimeout(main, 2)
 
-const canvas = document.querySelector("canvas")
-canvas.width = size
-canvas.height = size
-const c = canvas.getContext("2d")
+function main() {
+	const arcadeColors = [
+		"#000000",
+		"#ffffff",
+		"#EB0B32",// "#ff2121", 
+		"#ff93c4",
+		"#ff8135",
+		"#fff609",
+		"#249ca3",
+		"#78dc52",
+		"#003fad",
+		"#87f2ff",
+		"#8e2ec4",
+		"#a4839f",
+		"#5c406c",
+		"#e5cdc4",
+		"#91463d",
+		"#000000",
+	].map((color, index) => {
+		return {
+			color: hexToHSL(color),
+			index: (index).toString(16) // 9 = 9, 10 = a, 11 = b, etc.
+		}
+	})
 
-c.drawImage(img, 0, 0, size, size)
-var imgData = c.getImageData(0, 0, canvas.width, canvas.height);
-var data = imgData.data;
+	console.table(arcadeColors[2])
 
-let pixelIndex = 0
-const getPixel = 100
+	const form = document.querySelector("input")
 
-let x = 0
-let y = 0
-const makeCodeString = Array(120).fill(Array(120))
-for (let i = 0; i < data.length; i += 4) {
-	x = pixelIndex % size
-	y = Math.ceil(pixelIndex / size)
+	const MAX_IMAGE_SIZE = 180
+	const img = document.querySelector("img")
 
-	const red = data[i];
-	const green = data[i + 1];
-	const blue = data[i + 2];
+	const factor =
+		Math.min(img.width, img.height) / Math.max(img.width, img.height)
 
-	const hexString = "#" + [red, green, blue].map(n => n.toString(16)).join("")
-	const pixelAsHSL = hexToHSL(hexString)
+	img.width -= img.width - MAX_IMAGE_SIZE
+	img.height -= img.height - MAX_IMAGE_SIZE
+	//  img.width *= factor
 
-	const nearestL = arcadeColors.sort((a, b) => {
-		return Math.abs(a.color.l - pixelAsHSL.l) - Math.abs(b.color.l - pixelAsHSL.l)
-	})[0]
+	const canvas = document.querySelector("canvas")
+	canvas.width = img.width
+	canvas.height = img.height
+	const c = canvas.getContext("2d")
 
-	const nearestAsHSLString = `hsl(${nearestL.color.h}, ${Math.floor(nearestL.color.s)}%, ${Math.floor(nearestL.color.l)}%)`
-	c.fillStyle = nearestAsHSLString
-	c.fillRect(x, y, 1, 1)
-	// console.log(x, y, nearestL.index);
-	makeCodeString[x][y] = nearestL.index
-	pixelIndex++
-}
+	c.drawImage(img, 0, 0, canvas.width, canvas.height)
+	const imgData = c.getImageData(0, 0, canvas.width, canvas.height)
+	const data = imgData.data
 
-// console.log(makeCodeString.reduce((a, b) => a +))
+	let pixelIndex = 0
+	let x = 0
+	let y = 0
+	const makeCodeString = {}
 
-// const output = makeCodeString.reduce((result, current) => {
-// 	console.log(current)
-// 	// result += current + "\n"
-// 	return result
-// }, "")
+	for (let i = 0; i < data.length; i += 4) {
+		x = pixelIndex % canvas.width
+		y = Math.floor(pixelIndex / canvas.height)
 
-// console.log(output)
+		const r = data[i + 0]
+		const g = data[i + 1]
+		const b = data[i + 2]
+		const a = data[i + 3]
 
-// const output = makeCodeString.reduce((finalOutput, current, index) => {
-// 	// finalOutput += current + "\n"
-// 	console.log(current, current.replace("\t", "").length)
-// 	return finalOutput
-// }, ``)
+		const hexString = "#" + [r, g, b]
+			.map(n => n.toString(16))
+			.join("")
+		const pixelAsHSL = hexToHSL(hexString)
 
-// console.log(output)
+		const nearestL = arcadeColors.sort((a, b) => {
+			const hDifference = Math.abs(a.color.h - pixelAsHSL.h) - Math.abs(b.color.h - pixelAsHSL.h)
+			const sDifference = Math.abs(a.color.s - pixelAsHSL.s) - Math.abs(b.color.s - pixelAsHSL.s)
+			const lDifference = Math.abs(a.color.l - pixelAsHSL.l) - Math.abs(b.color.l - pixelAsHSL.l)
+			return (hDifference * 0.2) + (sDifference * 0.2) + (lDifference * 200)
+		})[0]
 
-// hexToHSL: https://css-tricks.com/converting-color-spaces-in-javascript/
-function hexToHSL(H) {
-	// Convert hex to RGB first
-	let r = 0, g = 0, b = 0;
-	if (H.length == 4) {
-		r = "0x" + H[1] + H[1];
-		g = "0x" + H[2] + H[2];
-		b = "0x" + H[3] + H[3];
-	} else if (H.length == 7) {
-		r = "0x" + H[1] + H[2];
-		g = "0x" + H[3] + H[4];
-		b = "0x" + H[5] + H[6];
+		const nearestAsHSLString = `hsl(${nearestL.color.h}, ${Math.floor(nearestL.color.s)}%, ${Math.floor(nearestL.color.l)}%)`
+		c.fillStyle = nearestAsHSLString
+		c.fillRect(x, y, 1, 1)
+
+		if (makeCodeString[`row-${y}`] === undefined) {
+			makeCodeString[`row-${y}`] = ""
+		} else {
+			makeCodeString[`row-${y}`] += nearestL.index + "\t"
+		}
+
+		pixelIndex++
 	}
-	// Then to HSL
-	r /= 255;
-	g /= 255;
-	b /= 255;
-	let cmin = Math.min(r, g, b),
-		cmax = Math.max(r, g, b),
-		delta = cmax - cmin,
-		h = 0,
-		s = 0,
-		l = 0;
 
-	if (delta == 0)
-		h = 0;
-	else if (cmax == r)
-		h = ((g - b) / delta) % 6;
-	else if (cmax == g)
-		h = (b - r) / delta + 2;
-	else
-		h = (r - g) / delta + 4;
+	let finalOutput = "let mySprite = sprites.create(img`"
+	for (const row in makeCodeString) {
+		finalOutput += makeCodeString[row] + "\n"
+	}
+	finalOutput += "`, SpriteKind.Player)"
 
-	h = Math.round(h * 60);
+	console.log(finalOutput)
 
-	if (h < 0)
-		h += 360;
+	// hexToHSL: https://css-tricks.com/converting-color-spaces-in-javascript/
+	function hexToHSL(H) {
+		// Convert hex to RGB first
+		let r = 0, g = 0, b = 0;
+		if (H.length == 4) {
+			r = "0x" + H[1] + H[1];
+			g = "0x" + H[2] + H[2];
+			b = "0x" + H[3] + H[3];
+		} else if (H.length == 7) {
+			r = "0x" + H[1] + H[2];
+			g = "0x" + H[3] + H[4];
+			b = "0x" + H[5] + H[6];
+		}
+		// Then to HSL
+		r /= 255;
+		g /= 255;
+		b /= 255;
+		let cmin = Math.min(r, g, b),
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
 
-	l = (cmax + cmin) / 2;
-	s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-	s = +(s * 100).toFixed(1);
-	l = +(l * 100).toFixed(1);
+		if (delta == 0)
+			h = 0;
+		else if (cmax == r)
+			h = ((g - b) / delta) % 6;
+		else if (cmax == g)
+			h = (b - r) / delta + 2;
+		else
+			h = (r - g) / delta + 4;
 
-	return { h, s, l };
+		h = Math.round(h * 60);
+
+		if (h < 0)
+			h += 360;
+
+		l = (cmax + cmin) / 2;
+		s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+
+		return { h, s, l };
+	}
 }
