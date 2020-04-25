@@ -11,6 +11,7 @@ form {
 	border: 1px solid grey;
 	background: #eee;
 	margin-bottom: 10px;
+	max-width: 20%;
 }
 
 label {
@@ -18,5 +19,10 @@ label {
 }
 
 button {
+	display: block;
+	margin-bottom: 10px;
+}
+
+textarea {
 	display: block;
 }

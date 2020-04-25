@@ -1,12 +1,15 @@
 // https://makecode.com/_Cm17aw5xbKpU
 // https://makecode.com/_1oqHvKFEE9Lf
+// https://makecode.com/_EvPP98M4pYEC
 
 const canvas = document.querySelector("canvas")
 const ta = document.querySelector("textarea")
 const copyButton = document.querySelector("button")
+const info = document.querySelector("p#info")
 
 document.querySelector("input").addEventListener("change", function () {
 	copyButton.innerText = "Copy code"
+	info.innerHTML = "Go to a project at <a href='https://arcade.makecode.com/'>arcade.makecode.com</a>, enter JavaScript mode, and paste the code!"
 	const img = document.createElement("img")
 	img.src = window.URL.createObjectURL(this.files[0])
 	img.addEventListener("load", () => main(img))
@@ -31,18 +34,18 @@ function main(img) {
 		"#91463d",
 		"#000000",
 	].map((color, index) => {
-		const r = parseInt(color[1] + color[2], 16)
+		const r = parseInt(color[1] + color[2], 16) // a -> 10
 		const g = parseInt(color[3] + color[4], 16)
 		const b = parseInt(color[5] + color[6], 16)
 		return {
 			color: { r, g, b },
-			index: (index).toString(16) // 9 = 9, 10 = a, 11 = b, etc.
+			index: (index).toString(16) // 10 -> a
 		}
 	})
 
-	const factor = img.width / 120
+	const ratio = img.width / 120
 	img.width = 120
-	img.height /= factor
+	img.height /= ratio
 
 	canvas.width = img.width
 	canvas.height = img.height
@@ -79,9 +82,6 @@ function main(img) {
 		if (makeCodeString[`row-${y}`] === undefined) {
 			makeCodeString[`row-${y}`] = ""
 		} else {
-			// if (pixelIndex == 100000) {
-			// 	console.log(makeCodeString[`row-${y}`])
-			// }
 			makeCodeString[`row-${y}`] += nearest.index + "\t"
 		}
 
