@@ -2,27 +2,35 @@
 // https://makecode.com/_1oqHvKFEE9Lf
 // https://makecode.com/_EvPP98M4pYEC
 
+/**
+ * To do:
+ * 
+ * 1. Implement "fit", "fill", "custom"
+ * 2. Black and white mode
+ * 3. Other cool effects
+ * 4. Shuffle colors
+ */
+
 const canvas = document.querySelector("canvas")
 const copyButton = document.querySelector("button")
-const info = document.querySelector("p#info")
-const input = document.querySelector("input")
+const form = document.querySelector("form")
+const input = document.querySelector("input#myFile")
 const textarea = document.querySelector("textarea")
-const status = document.querySelector("#status")
 
 // Happens when image is uploaded
 input.addEventListener("change", function onLoadedImage() {
+	console.log(event.srcElement.type)
 	// 1. Set button text back to its original state,
 	// 2. Add info text to help users
 	// 3. Create image element, and send it through the convert function
 	copyButton.innerText = "Copy code"
-	info.innerHTML = "Go to a project at <a href='https://arcade.makecode.com/'>arcade.makecode.com</a>, enter JavaScript mode, and paste the code!"
 	const img = document.createElement("img")
 	img.src = window.URL.createObjectURL(this.files[0])
 	img.addEventListener("load", () => convert(img))
 })
 
 function convert(img) {
-	const defaultMakeCodeArcadeColors = [
+	const arcadeColors = [
 		"#00000000", // Transparent
 		"#ffffff",
 		"#ff2121",
@@ -40,18 +48,19 @@ function convert(img) {
 		"#91463d",
 		"#000000",
 	].map(function convertFromHexToRGB(color, index) {
-		const r = parseInt(color[1] + color[2], 16) // a -> 10
+		const r = parseInt(color[1] + color[2], 16) // parseInt("a") === 10
 		const g = parseInt(color[3] + color[4], 16)
 		const b = parseInt(color[5] + color[6], 16)
+
 		return {
 			color: { r, g, b },
-			index: (index).toString(16) // 10 -> a
+			index: (index).toString(16) // (10).toString(16) === "a"
 		}
 	})
 
-	// For the time being, we assume images to be wider than they are tall
-	const ratio = img.width / 120
-	img.width = 120
+	// MakeCode Arcade is 160x120, so 160 fills the screen, while 120 fits the image to the screen.
+	const ratio = img.width / 160
+	img.width = 160
 	img.height /= ratio
 
 	// Get the image's pixels and draw them onto a canvas element
@@ -61,17 +70,15 @@ function convert(img) {
 	const c = canvas.getContext("2d")
 	c.drawImage(img, 0, 0, canvas.width, canvas.height)
 
-
 	let pixelIndex = 0
-	const makeCodeString = {}
+	let makeCodeString = {}
 	const data = c.getImageData(0, 0, canvas.width, canvas.height).data
 
-	// The pixels are stored in one single-dimensional array:
-	// [r, g, b, a, r, g, b, a, etc.]
+	// Canvas pixel values are stored as rgba: [r, g, b, a, r, g, b, a, ...]
 	for (let i = 0; i < data.length; i += 4) {
 		// This is how you get x and y coordinates from one variable
-		let x = pixelIndex % canvas.width
-		let y = Math.floor(pixelIndex / canvas.width)
+		const x = pixelIndex % canvas.width
+		const y = Math.floor(pixelIndex / canvas.width)
 
 		const r = data[i + 0]
 		const g = data[i + 1]
@@ -84,10 +91,11 @@ function convert(img) {
 		We loop through the 16 color palette and pick the one that has
 		the closest r, g, and b values to the pixel we're checking.
 		*/
-		const nearest = defaultMakeCodeArcadeColors.sort((prev, curr) => {
+		const nearest = arcadeColors.sort((prev, curr) => {
 			const rDifference = Math.abs(prev.color.r - r) - Math.abs(curr.color.r - r)
 			const gDifference = Math.abs(prev.color.g - g) - Math.abs(curr.color.g - g)
 			const bDifference = Math.abs(prev.color.b - b) - Math.abs(curr.color.b - b)
+
 			return rDifference + gDifference + bDifference
 		})[0]
 

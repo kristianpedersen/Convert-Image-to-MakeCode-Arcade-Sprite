@@ -12,14 +12,18 @@
 	<h1>Convert image to MakeCode Arcade sprite</h1>
 
 	<form>
+		<label>
+			<input type="checkbox" name="white-transparency" id="w">White = transparency
+		</label>
+		<label>
+			<input type="checkbox" name="black-transparency" id="b">Black = transparency
+		</label>
 		<input type="file" id="myFile" name="filename">
 	</form>
 
-	<div id="status">0%</div>
-
-	<button disabled>Copy code</button>
 	<canvas width=0 height=0></canvas>
 	<p id="info"></p>
+	<button disabled>Copy code</button>
 	<textarea name="" id="" cols="200" rows="30"></textarea>
 	<script src="main.js"></script>
 </body>

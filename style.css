@@ -1,5 +1,6 @@
 body {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	font-size: 18px;
 }
 
 img {
@@ -7,11 +8,11 @@ img {
 }
 
 form {
-	padding: 10px;
+	padding: 10px 25px;
 	border: 1px solid grey;
 	background: #eee;
 	margin-bottom: 10px;
-	max-width: 20%;
+	max-width: 15%;
 }
 
 label {
@@ -31,4 +32,16 @@ textarea {
 	width: 1%;
 	margin-bottom: 10px;
 	background-color: lemonchiffon;
+}
+
+canvas {
+	float: right;
+	border: 1px solid black;
+	padding: 5px;
+	margin-right: 10px;
+}
+
+label {
+	margin: 20px 0px;
+	/* padding-left: 10px; */
 }
