@@ -10,20 +10,40 @@
 
 <body>
 	<h1>Convert image to MakeCode Arcade sprite</h1>
+	<img src="img2.jpeg" alt="Bilde av tennisspiller" width=160>
+	<form action="#" method="POST">
+		<div id="parameters">
+			<div id="left" class="half">
+				<label>
+					<input type="radio" name="size" id="original" checked /> Keep original size
+				</label>
+				<label>
+					<input type="radio" name="size" id="full-width" /> Fit to width (w=160px h=?)
+				</label>
+				<label>
+					<input type="radio" name="size" id="full-height" /> Fit to height (w=? h=120px)
+				</label>
+			</div>
 
-	<form>
-		<label>
-			<input type="checkbox" name="white-transparency" id="w">White = transparency
-		</label>
-		<label>
-			<input type="checkbox" name="black-transparency" id="b">Black = transparency
-		</label>
+			<div id="right" class="half">
+				<label>
+					<input type="radio" name="size" id="scale" /> Scale image by factor
+					<input type="number" name="size" id="factor" placeholder="0.2" disabled>
+				</label>
+				<label>
+					<input type="radio" name="size" id="custom" /> Custom resolution
+					<input type="number" name="size" id="width" class="custom" placeholder="width (px)" disabled>
+					<input type="number" name="size" id="height" class="custom" placeholder="height (px)" disabled>
+				</label>
+			</div>
+		</div>
 		<input type="file" id="myFile" name="filename">
+		<button type="submit">Convert to MakeCode Arcade sprite</button>
 	</form>
 
 	<canvas width=0 height=0></canvas>
 	<p id="info"></p>
-	<button disabled>Copy code</button>
+	<button id="copy" disabled>Copy code</button>
 	<textarea name="" id="" cols="200" rows="30"></textarea>
 	<script src="main.js"></script>
 </body>

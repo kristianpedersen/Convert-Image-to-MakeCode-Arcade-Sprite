@@ -1,5 +1,3 @@
-// https://makecode.com/_Cm17aw5xbKpU
-// https://makecode.com/_1oqHvKFEE9Lf
 // https://makecode.com/_EvPP98M4pYEC
 
 /**
@@ -12,24 +10,36 @@
  */
 
 const canvas = document.querySelector("canvas")
-const copyButton = document.querySelector("button")
+const copyButton = document.querySelector("button#copy")
+const customSizes = document.querySelectorAll("input[type='number'].custom")
 const form = document.querySelector("form")
 const input = document.querySelector("input#myFile")
+const radioButtons = document.querySelectorAll("input[type='radio']")
+const scaleFactor = document.querySelector("input[type='number']#factor")
 const textarea = document.querySelector("textarea")
 
-// Happens when image is uploaded
-input.addEventListener("change", function onLoadedImage() {
-	console.log(event.srcElement.type)
-	// 1. Set button text back to its original state,
-	// 2. Add info text to help users
-	// 3. Create image element, and send it through the convert function
-	copyButton.innerText = "Copy code"
+input.addEventListener("change", function whenImageIsUploaded() {
 	const img = document.createElement("img")
 	img.src = window.URL.createObjectURL(this.files[0])
 	img.addEventListener("load", () => convert(img))
 })
 
+let mode = "full-width"
+radioButtons.forEach(radioButton => {
+	radioButton.addEventListener("change", function sizeOption() {
+		mode = this.id
+		customSizes.forEach(field => field.disabled = (mode !== "custom"))
+		scaleFactor.disabled = (mode !== "scale")
+	})
+})
+
+form.addEventListener("submit", function convertImage(event) {
+	event.preventDefault()
+	convert(document.querySelector("img"))
+})
+
 function convert(img) {
+	copyButton.innerText = "Copy code" // Reset text if another image is uploaded
 	const arcadeColors = [
 		"#00000000", // Transparent
 		"#ffffff",
@@ -48,7 +58,7 @@ function convert(img) {
 		"#91463d",
 		"#000000",
 	].map(function convertFromHexToRGB(color, index) {
-		const r = parseInt(color[1] + color[2], 16) // parseInt("a") === 10
+		const r = parseInt(color[1] + color[2], 16) // parseInt("a", 16) === 10
 		const g = parseInt(color[3] + color[4], 16)
 		const b = parseInt(color[5] + color[6], 16)
 
@@ -58,10 +68,37 @@ function convert(img) {
 		}
 	})
 
-	// MakeCode Arcade is 160x120, so 160 fills the screen, while 120 fits the image to the screen.
-	const ratio = img.width / 160
-	img.width = 160
-	img.height /= ratio
+	/**
+	 * MakeCode Arcade is 160x120
+	 * 
+	* 	Full width:
+	 * 		factor = 160 / img.width
+	 * 	Full height:
+	 * 		factor = 120 / img.height
+	 * 	Custom width:
+	 * 		factor = n / img.width
+	 * 	Custom height:
+	 * 		factor = n / img.height
+	 * 		 
+	 * 	w *= factor
+	 * 	h *= factor
+	 */
+	function setSpriteDimensions(type, custom = {}) {
+		if (type === "custom") {
+			img.width = custom.width;
+			img.height = custom.height;
+		} else {
+			const factor = {
+				"full-width": 160 / img.width,
+				"full-height": 120 / img.height,
+			}
+
+			img.width *= factor[type]
+			img.height *= factor[type]
+		}
+	}
+
+	setSpriteDimensions(mode) // Mode is set when radio buttons are clicked. Default is full-width.
 
 	// Get the image's pixels and draw them onto a canvas element
 	// This way, we can loop through the pixels
@@ -87,7 +124,7 @@ function convert(img) {
 
 		/*
 		Now we have the rgba values for one pixel from the original image.
-		MakeCode colors are represented as index values from 0-15.
+		MakeCode colors are represented as index values from 0-15 (or really, 0-f).
 		We loop through the 16 color palette and pick the one that has
 		the closest r, g, and b values to the pixel we're checking.
 		*/
@@ -111,8 +148,7 @@ function convert(img) {
 			makeCodeString[`row-${y}`] = ""
 		} else {
 			if (nearest.index == 0) {
-				// 0 is transparent, 15 is black.
-				// f = 15 (0 1 2 3 4 5 6 7 8 9 a b c d e f)
+				// 0 is transparent, f is black.
 				makeCodeString[`row-${y}`] += "f" + "\t"
 			} else {
 				makeCodeString[`row-${y}`] += nearest.index + "\t"
@@ -123,18 +159,18 @@ function convert(img) {
 	}
 
 	// Loop through the makeCodeString object to create the output
-	let finalOutput = "let mySprite = sprites.create(img`"
+	let spriteJavaScript = "let mySprite = sprites.create(img`"
 	for (const row in makeCodeString) {
-		finalOutput += makeCodeString[row] + "\n"
+		spriteJavaScript += makeCodeString[row] + "\n"
 	}
-	finalOutput += "`, SpriteKind.Player)"
+	spriteJavaScript += "`, SpriteKind.Player)"
 
 	// Copy text when user clicks button
 	// Sure, they can copy it themselves, but it's good to do nice things sometimes.
-	textarea.textContent = finalOutput
+	textarea.textContent = spriteJavaScript
 	copyButton.removeAttribute("disabled")
 
-	copyButton.addEventListener("click", () => {
+	copyButton.addEventListener("click", function addCodeToClipboard() {
 		textarea.select()
 		document.execCommand("copy")
 		copyButton.innerText = "Code copied to clipboard!"
