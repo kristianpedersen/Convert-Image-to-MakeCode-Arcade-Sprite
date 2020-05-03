@@ -1,3 +1,4 @@
+let mode = "full-width"
 // https://makecode.com/_EvPP98M4pYEC
 
 /**
@@ -17,6 +18,7 @@ const form = document.querySelector("form")
 const numberInputs = document.querySelectorAll("input[type='number']")
 const radioButtons = document.querySelectorAll("input[type='radio']")
 const scaleFactor = document.querySelector("input[type='number']#factor")
+const submitButton = document.querySelector("button[type='submit']")
 const textarea = document.querySelector("textarea")
 
 let originalImageSize = {
@@ -24,19 +26,23 @@ let originalImageSize = {
 	height: 0
 }
 
-numberInputs.forEach(numberInput => {
-	numberInput.addEventListener("click", function activate() {
-		console.log(this)
-	})
-})
-
 fileInput.addEventListener("change", function whenImageIsUploaded() {
 	const img = document.createElement("img")
 	img.src = window.URL.createObjectURL(this.files[0])
-	img.addEventListener("load", () => convert(img))
+	const node = document.querySelector("img")
+	if (node !== null) {
+		node.parentNode.removeChild(node)
+	}
+	document.body.appendChild(img)
+	img.addEventListener("load", () => {
+		originalImageSize.width = img.width
+		originalImageSize.height = img.height
+		mode = "full-width"
+		convert(img)
+	})
+	submitButton.disabled = false
 })
 
-let mode = "full-width"
 radioButtons.forEach(radioButton => {
 	radioButton.addEventListener("change", function sizeOption() {
 		mode = this.id
@@ -50,8 +56,8 @@ form.addEventListener("submit", function convertImage(event) {
 	event.preventDefault()
 	const imageDOM = document.querySelector("img")
 	if (originalImageSize.width === 0 && originalImageSize.height === 0) {
-		originalImageSize.width = Object.freeze(imageDOM.width)
-		originalImageSize.height = Object.freeze(imageDOM.height)
+		originalImageSize.width = imageDOM.width
+		originalImageSize.height = imageDOM.height
 	}
 	img = document.querySelector("img")
 	convert(img)
@@ -105,10 +111,9 @@ function convert(img) {
 	 * 	h *= factor
 	 */
 	function setSpriteDimensions(type) {
-		// console.log(img.width, img.height);
 		let imageWidth = originalImageSize.width
 		let imageHeight = originalImageSize.height
-		// console.log(imgWidth, imgHeight);
+		let factor = 1
 		if (type === "custom") {
 			let customWidth = document.querySelector(".custom#width").value
 			let customHeight = document.querySelector(".custom#height").value
@@ -138,7 +143,6 @@ function convert(img) {
 			imageWidth *= factor
 			imageHeight *= factor
 		}
-		console.log(imageWidth, imageHeight)
 		img.width = imageWidth
 		img.height = imageHeight
 	}
@@ -149,7 +153,6 @@ function convert(img) {
 	// This way, we can loop through the pixels
 	canvas.width = img.width
 	canvas.height = img.height
-	console.log(img.width, img.height)
 	const c = canvas.getContext("2d")
 	c.drawImage(img, 0, 0, canvas.width, canvas.height)
 

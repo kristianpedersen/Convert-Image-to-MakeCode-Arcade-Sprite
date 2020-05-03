@@ -3,8 +3,8 @@ body {
 	font-size: 18px;
 	padding: 10px;
 	border-radius: 3px;
-	background-color: #333;
-	color: #eee;
+	/* background-color: #333; */
+	/* color: #eee; */
 }
 
 img {
@@ -15,7 +15,7 @@ img {
 form {
 	padding: 10px 25px;
 	border: 1px solid hsl(10, 50%, 50%);
-	background: hsl(190, 10%, 20%);
+	/* background: hsl(190, 10%, 20%); */
 	margin-bottom: 10px;
 }
 
@@ -23,8 +23,8 @@ input[disabled] {pointer-events:none}
 
 #parameters {
 	border: 1px solid black;
-	background: hsl(10, 50%, 20%);
-	/* background-color: magenta; */
+	background: hsl(220, 20%, 70%);
+	color: black;
 	overflow: auto;
 	margin: 10px 0;
 	padding: 5px;
@@ -67,7 +67,7 @@ textarea {
 
 canvas {
 	float: right;
-	border: 1px solid black;
+	/* border: 1px solid black; */
 	padding: 5px;
 	margin-right: 10px;
 }

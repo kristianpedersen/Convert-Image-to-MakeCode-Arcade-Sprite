@@ -10,16 +10,16 @@
 
 <body>
 	<!-- <h1>Convert image to MakeCode Arcade sprite</h1> -->
-	<img src="img2.jpeg" />
+	<!-- <img src="img2.jpeg" /> -->
 	<form action="#" method="POST">
 
 		<div id="parameters">
 			<div id="left" class="half">
 				<label>
-					<input type="radio" name="size" id="full-width" checked /> Fit to width (width = 160px)
+					<input type="radio" name="size" id="full-width" checked /> Default: Fit to width
 				</label>
 				<label>
-					<input type="radio" name="size" id="full-height" /> Fit to height (height = 120px)
+					<input type="radio" name="size" id="full-height" /> Fit to height
 				</label>
 				<label>
 					<input type="radio" name="size" id="original" /> Keep original size
@@ -39,7 +39,7 @@
 			</div>
 		</div>
 		<input type="file" id="myFile" name="filename">
-		<button type="submit">Convert to MakeCode Arcade sprite</button>
+		<button type="submit" disabled>Apply setting</button>
 	</form>
 
 	<canvas width=0 height=0></canvas>
