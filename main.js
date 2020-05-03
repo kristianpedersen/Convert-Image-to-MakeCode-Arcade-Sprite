@@ -12,13 +12,25 @@
 const canvas = document.querySelector("canvas")
 const copyButton = document.querySelector("button#copy")
 const customSizes = document.querySelectorAll("input[type='number'].custom")
+const fileInput = document.querySelector("input#myFile")
 const form = document.querySelector("form")
-const input = document.querySelector("input#myFile")
+const numberInputs = document.querySelectorAll("input[type='number']")
 const radioButtons = document.querySelectorAll("input[type='radio']")
 const scaleFactor = document.querySelector("input[type='number']#factor")
 const textarea = document.querySelector("textarea")
 
-input.addEventListener("change", function whenImageIsUploaded() {
+let originalImageSize = {
+	width: 0,
+	height: 0
+}
+
+numberInputs.forEach(numberInput => {
+	numberInput.addEventListener("click", function activate() {
+		console.log(this)
+	})
+})
+
+fileInput.addEventListener("change", function whenImageIsUploaded() {
 	const img = document.createElement("img")
 	img.src = window.URL.createObjectURL(this.files[0])
 	img.addEventListener("load", () => convert(img))
@@ -28,6 +40,7 @@ let mode = "full-width"
 radioButtons.forEach(radioButton => {
 	radioButton.addEventListener("change", function sizeOption() {
 		mode = this.id
+		const numberInput = this.parentElement.querySelector("input[type='number']")
 		customSizes.forEach(field => field.disabled = (mode !== "custom"))
 		scaleFactor.disabled = (mode !== "scale")
 	})
@@ -35,10 +48,18 @@ radioButtons.forEach(radioButton => {
 
 form.addEventListener("submit", function convertImage(event) {
 	event.preventDefault()
-	convert(document.querySelector("img"))
+	const imageDOM = document.querySelector("img")
+	if (originalImageSize.width === 0 && originalImageSize.height === 0) {
+		originalImageSize.width = Object.freeze(imageDOM.width)
+		originalImageSize.height = Object.freeze(imageDOM.height)
+	}
+	img = document.querySelector("img")
+	convert(img)
+	resetImageSize(img)
 })
 
 function convert(img) {
+	// originalImageSize
 	copyButton.innerText = "Copy code" // Reset text if another image is uploaded
 	const arcadeColors = [
 		"#00000000", // Transparent
@@ -83,19 +104,43 @@ function convert(img) {
 	 * 	w *= factor
 	 * 	h *= factor
 	 */
-	function setSpriteDimensions(type, custom = {}) {
+	function setSpriteDimensions(type) {
+		// console.log(img.width, img.height);
+		let imageWidth = originalImageSize.width
+		let imageHeight = originalImageSize.height
+		// console.log(imgWidth, imgHeight);
 		if (type === "custom") {
-			img.width = custom.width;
-			img.height = custom.height;
-		} else {
-			const factor = {
-				"full-width": 160 / img.width,
-				"full-height": 120 / img.height,
-			}
+			let customWidth = document.querySelector(".custom#width").value
+			let customHeight = document.querySelector(".custom#height").value
 
-			img.width *= factor[type]
-			img.height *= factor[type]
+			if (customWidth && !customHeight) {
+				const factor = customWidth / originalImageSize.width
+				imageWidth = customWidth
+				imageHeight *= factor
+			} else if (!customWidth && customHeight) {
+				const factor = customHeight / originalImageSize.height
+				imageWidth *= factor
+				imageHeight = customHeight
+			} else {
+				imageWidth = customWidth
+				imageHeight = customHeight
+			}
+		} else if (type === "scale") {
+			const factor = document.querySelector("input#factor").value
+			imageWidth *= factor
+			imageHeight *= factor
+		} else if (type === "full-width") {
+			const factor = 160 / imageWidth
+			imageWidth *= factor
+			imageHeight *= factor
+		} else if (type === "full-height") {
+			const factor = 120 / imageHeight
+			imageWidth *= factor
+			imageHeight *= factor
 		}
+		console.log(imageWidth, imageHeight)
+		img.width = imageWidth
+		img.height = imageHeight
 	}
 
 	setSpriteDimensions(mode) // Mode is set when radio buttons are clicked. Default is full-width.
@@ -104,6 +149,7 @@ function convert(img) {
 	// This way, we can loop through the pixels
 	canvas.width = img.width
 	canvas.height = img.height
+	console.log(img.width, img.height)
 	const c = canvas.getContext("2d")
 	c.drawImage(img, 0, 0, canvas.width, canvas.height)
 
@@ -174,5 +220,11 @@ function convert(img) {
 		textarea.select()
 		document.execCommand("copy")
 		copyButton.innerText = "Code copied to clipboard!"
+		resetImageSize(img)
 	})
+}
+
+function resetImageSize(img) {
+	img.width = originalImageSize.width
+	img.height = originalImageSize.height
 }
