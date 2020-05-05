@@ -17,6 +17,8 @@ form {
 	border: 1px solid hsl(10, 50%, 50%);
 	/* background: hsl(190, 10%, 20%); */
 	margin-bottom: 10px;
+	float: left;
+	margin-right: 50px;
 }
 
 input[disabled] {pointer-events:none}
@@ -56,7 +58,9 @@ input[type="number"] {
 }
 
 textarea {
+	clear: both;
 	display: block;
+	/* max-width: 50%; */
 }
 
 #status {
@@ -66,10 +70,10 @@ textarea {
 }
 
 canvas {
-	float: right;
-	/* border: 1px solid black; */
+	float: left;
 	padding: 5px;
 	margin-right: 10px;
+	max-height: 100px;
 }
 
 label {

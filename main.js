@@ -18,7 +18,6 @@ const form = document.querySelector("form")
 const numberInputs = document.querySelectorAll("input[type='number']")
 const radioButtons = document.querySelectorAll("input[type='radio']")
 const scaleFactor = document.querySelector("input[type='number']#factor")
-const submitButton = document.querySelector("button[type='submit']")
 const textarea = document.querySelector("textarea")
 
 let originalImageSize = {
@@ -30,17 +29,19 @@ fileInput.addEventListener("change", function whenImageIsUploaded() {
 	const img = document.createElement("img")
 	img.src = window.URL.createObjectURL(this.files[0])
 	const node = document.querySelector("img")
+
 	if (node !== null) {
 		node.parentNode.removeChild(node)
 	}
+
 	document.body.appendChild(img)
+
 	img.addEventListener("load", () => {
 		originalImageSize.width = img.width
 		originalImageSize.height = img.height
 		mode = "full-width"
 		convert(img)
 	})
-	submitButton.disabled = false
 })
 
 radioButtons.forEach(radioButton => {
@@ -49,6 +50,9 @@ radioButtons.forEach(radioButton => {
 		const numberInput = this.parentElement.querySelector("input[type='number']")
 		customSizes.forEach(field => field.disabled = (mode !== "custom"))
 		scaleFactor.disabled = (mode !== "scale")
+		scaleFactor.value = 0.1
+		img = document.querySelector("img")
+		convert(img)
 	})
 })
 
@@ -145,6 +149,7 @@ function convert(img) {
 		}
 		img.width = imageWidth
 		img.height = imageHeight
+		copyButton.innerText += ` (${img.width} x ${img.height})`
 	}
 
 	setSpriteDimensions(mode) // Mode is set when radio buttons are clicked. Default is full-width.
@@ -222,6 +227,7 @@ function convert(img) {
 	copyButton.addEventListener("click", function addCodeToClipboard() {
 		textarea.select()
 		document.execCommand("copy")
+		console.log("copy!");
 		copyButton.innerText = "Code copied to clipboard!"
 		resetImageSize(img)
 	})

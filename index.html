@@ -27,9 +27,10 @@
 			</div>
 
 			<div id="right" class="half">
+				<p>Press enter to confirm:</p>
 				<label>
-					<input type="radio" name="size" id="scale" /> Scale image by factor
-					<input type="number" name="size" id="factor" value="0.5" step="0.01" disabled>
+					<input type="radio" name="size" id="scale" value="0.1" /> Scale image by factor
+					<input type="number" name="size" id="factor" step="0.01" disabled>
 				</label>
 				<label>
 					<input type="radio" name="size" id="custom" /> Custom resolution
@@ -39,12 +40,11 @@
 			</div>
 		</div>
 		<input type="file" id="myFile" name="filename">
-		<button type="submit" disabled>Apply setting</button>
+		<button id="copy" disabled>Copy code</button>
+		<!-- <button type="submit" disabled style="visibility: hidden;">Apply setting</button> -->
 	</form>
 
 	<canvas width=0 height=0></canvas>
-	<p id="info"></p>
-	<button id="copy" disabled>Copy code</button>
 	<textarea name="" id="" cols="200" rows="30"></textarea>
 	<script src="main.js"></script>
 </body>
