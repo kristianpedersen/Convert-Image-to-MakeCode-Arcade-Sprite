@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<!-- <h1>Convert image to MakeCode Arcade sprite</h1> -->
+	<!-- <img src="img2.jpeg" /> -->
+	<form action="#" method="POST">
+
+		<div id="parameters">
+			<div id="left" class="half">
+				<label>
+					<input type="radio" name="size" id="full-width" checked /> Default: Fit to width
+				</label>
+				<label>
+					<input type="radio" name="size" id="full-height" /> Fit to height
+				</label>
+				<label>
+					<input type="radio" name="size" id="original" /> Keep original size
+				</label>
+			</div>
+
+			<div id="right" class="half">
+				<p>Press enter to confirm:</p>
+				<label>
+					<input type="radio" name="size" id="scale" value="0.1" /> Scale image by factor
+					<input type="number" name="size" id="factor" step="0.01" disabled>
+				</label>
+				<label>
+					<input type="radio" name="size" id="custom" /> Custom resolution
+					<input type="number" name="size" id="width" class="custom" placeholder="width (px)" disabled>
+					<input type="number" name="size" id="height" class="custom" placeholder="height (px)" disabled>
+				</label>
+			</div>
+		</div>
+		<input type="file" id="myFile" name="filename">
+		<button id="copy" disabled>Copy code</button>
+		<!-- <button type="submit" disabled style="visibility: hidden;">Apply setting</button> -->
+	</form>
+
+	<canvas width=0 height=0></canvas>
+	<textarea name="" id="" cols="200" rows="30"></textarea>
+	<script src="main.js"></script>
+</body>
+
+</html>
