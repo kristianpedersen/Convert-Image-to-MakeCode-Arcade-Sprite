@@ -213,7 +213,12 @@ function convert(img) {
 	}
 
 	// Loop through the makeCodeString object to create the output
-	let spriteJavaScript = "let mySprite = sprites.create(img`"
+	let dateString = new Date()
+		.toISOString()
+		.replaceAll("-", "")
+		.replaceAll(":", "")
+		.replaceAll(".", "")
+	let spriteJavaScript = `let mySprite${dateString} = sprites.create(img\``
 	for (const row in makeCodeString) {
 		spriteJavaScript += makeCodeString[row] + "\n"
 	}
