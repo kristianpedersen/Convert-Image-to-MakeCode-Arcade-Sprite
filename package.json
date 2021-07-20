@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "deploy": "gh-pages -d ~/js/Convert-Image-to-MakeCode-Arcade-Sprite"
+    "deploy": "gh-pages -d ./"
   },
   "repository": {
     "type": "git",
