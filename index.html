@@ -9,12 +9,15 @@
 </head>
 
 <body>
-	<ol>
-		<li>Upload an image</li>
-		<li>Paste the code below into MakeCode's JavaScript tab.</li>
-	</ol>
-	<p>No need to manually create a sprite first. The code creates it for you.</p>
+	<div id="info">
+		<ol>
+			<li>Upload an image</li>
+			<li>Paste the code below into MakeCode's JavaScript tab.</li>
+		</ol>
+		<p>No need to manually create a sprite first. The code creates it for you.</p>
+	</div>
 	<form action="#" method="POST">
+		<input type="file" id="myFile" name="filename">
 
 		<div id="parameters">
 			<div id="left" class="half">
@@ -30,7 +33,7 @@
 			</div>
 
 			<div id="right" class="half">
-				<p>Press enter to confirm:</p>
+				<p>(Press enter to confirm)</p>
 				<label>
 					<input type="radio" name="size" id="scale" value="0.1" /> Scale image by factor
 					<input type="number" name="size" id="factor" step="0.01" disabled>
@@ -42,7 +45,6 @@
 				</label>
 			</div>
 		</div>
-		<input type="file" id="myFile" name="filename">
 		<button id="copy" disabled>Copy code</button>
 		<!-- <button type="submit" disabled style="visibility: hidden;">Apply setting</button> -->
 	</form>

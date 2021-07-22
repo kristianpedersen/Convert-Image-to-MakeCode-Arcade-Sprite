@@ -14,8 +14,8 @@ img {
 
 form {
 	padding: 10px 25px;
-	border: 1px solid hsl(10, 50%, 50%);
-	/* background: hsl(190, 10%, 20%); */
+	border: 1px solid hsl(40, 50%, 50%);
+	background: hsl(40, 50%, 95%);
 	margin-bottom: 10px;
 	float: left;
 	margin-right: 50px;
@@ -25,7 +25,7 @@ input[disabled] {pointer-events:none}
 
 #parameters {
 	border: 1px solid black;
-	background: hsl(220, 20%, 70%);
+	background: hsl(220, 20%, 95%);
 	color: black;
 	overflow: auto;
 	margin: 10px 0;
@@ -79,4 +79,19 @@ canvas {
 label {
 	margin: 20px 0px;
 	/* padding-left: 10px; */
+}
+
+#info {
+	background-color:hsl(100, 50%, 95%);
+	border: 1px solid hsl(100, 50%, 50%);
+	margin-bottom: 1em;
+	padding: 0.5em;
+	padding-top: 0;
+	width: 600px;
+}
+
+input#myFile {
+	background-color: white;
+	padding: 2em;
+	border: 1px solid hsl(40, 50%, 50%);
 }
